@@ -1,25 +1,32 @@
-import Navbar from "./Navbar"
-import Location  from "./Pages/Location"
-import About from "./Pages/About"
-import Services from "./Pages/Services"
-import { Route, Routes } from "react-router-dom"
-import './style.css'
-import './index.js'
-import './index.css'
+import axios from "axios";
+import { Table } from "antd";
+import { useEffect, useState } from "react";
+import "antd/dist/antd.css"
 
-function App() {
+export default function App() {
+  let [data, setData] = useState([]);
+  useEffect(() =>{
+    axios.get("https://jsonplaceholder.typicode.com/posts/")
+    .then(res => {
+      console.log(res.data);
+      setData(res.data)
+      console.log(res)
+    }).catch(e => console.error("an error occurred"));
+    
+  }, []);
+  const cols = [
+    {
+      title: "User ID",
+      index: "userId",
+      dataIndex: "userId"
+    },
+    {
+      title: "Title",
+      index: "title",
+      dataIndex: "title"
+    }
+  ]
   return (
-    <>
-      <Navbar />
-      <div className="container">
-        <Routes>
-          <Route path="/Location" element={<Location />} />
-          <Route path="/Services" element={<Services />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </div>
-    </>
-  )
+   <Table dataSource={data} columns={cols} rowKey={record => record.id} />
+  );
 }
-
-export default App
